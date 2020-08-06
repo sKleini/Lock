@@ -1,6 +1,5 @@
 package de.kleini.lock
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -37,16 +36,11 @@ class App() : AppCompatActivity() {
 
             startLockTask()
         } else {
+            sharedPref.edit().putBoolean(PREF_NAME, true).apply()
 
             stopLockTask()
             finishAndRemoveTask()
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        val sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        sharedPref.edit().putBoolean(PREF_NAME, true).apply()
     }
 
 }
