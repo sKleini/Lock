@@ -37,11 +37,16 @@ class App() : AppCompatActivity() {
 
             startLockTask()
         } else {
-            sharedPref.edit().putBoolean(PREF_NAME, true).apply()
 
             stopLockTask()
             finishAndRemoveTask()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+        sharedPref.edit().putBoolean(PREF_NAME, true).apply()
     }
 
 }
