@@ -1,7 +1,12 @@
 package de.kleini.lock
 
+import android.annotation.TargetApi
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -9,35 +14,43 @@ import androidx.appcompat.app.AppCompatActivity
 
 class App() : AppCompatActivity() {
 
+    private val TAG = "Activity"
     lateinit var sharedPref: SharedPreferences
     private var PRIVATE_MODE = 0
     private val PREF_NAME = "store"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("Activity", "onCreate")
+        Log.d(TAG, "onCreate")
         setContentView(R.layout.activity_app)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
         sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         sharedPref.edit().putBoolean(PREF_NAME, false).apply()
-        startLockTask()
+
+        if (!checkDrawOverlayPermission()) {
+                startLockTask()
+        }
 
         findViewById<View>(R.id.finish)
             .setOnClickListener {
-                stopLockTask()
+                if (!checkDrawOverlayPermission()) {
+                    stopLockTask()
+                }
                 finishAndRemoveTask()
             }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("Activity", "onResume")
+        Log.d(TAG, "onResume")
 
         sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
 
         if (sharedPref.getBoolean(PREF_NAME, true)) {
-            stopLockTask()
+            if (!checkDrawOverlayPermission()) {
+                stopLockTask()
+            }
             finishAndRemoveTask()
         } else {
             sharedPref.edit().putBoolean(PREF_NAME, true).apply()
@@ -46,14 +59,18 @@ class App() : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        Log.d("Activity", "onRestart")
+        Log.d(TAG, "onRestart")
         sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         sharedPref.edit().putBoolean(PREF_NAME, false).apply()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("Activity", "onDestroy")
+        Log.d(TAG, "onDestroy")
+    }
+
+    private fun checkDrawOverlayPermission(): Boolean {
+        return Settings.canDrawOverlays(this)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
