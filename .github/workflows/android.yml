@@ -23,20 +23,20 @@ jobs:
       run: ./gradlew assemble
     - name: Copy unsigned release file to release folder
       run:  |
-        mkdir -p app/release
-        cp app/build/outputs/apk/release/app-release-unsigned.apk app/release/temp.apk
+        mkdir -p app/release/temp
+        cp app/build/outputs/apk/release/app-release-unsigned.apk app/release/temp/temp.apk
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
       with:
-        releaseDirectory: app/release
+        releaseDirectory: app/release/temp
         signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
         keyPassword: ${{ secrets.KEYPASSWORD }}
-    - name: Remove unsigned file
-      run:  rm app/release/temp.apk 
     - name: Rename signed file
-      run:  mv app/release/temp-signed.apk app/release/Lock.apk    
+      run:  mv app/release/temp/temp-signed.apk app/release/Lock.apk
+    - name: Remove temp signing folder
+      run:  rm -r app/release/temp
     - name: Setup git
       run: |
         git config --local user.name ${{ secrets.ACTIONS_USERNAME }}
