@@ -19,19 +19,32 @@ jobs:
         java-version: 1.8
     - name: Make gradlew executable
       run: chmod +x ./gradlew
-    - name: Release with Gradle
-      run: ./gradlew assembleRelease
+    - name: Build with Gradle
+      run: ./gradlew assemble
+    - name: Copy unsigned release file to release folder
+      run:  cp app/build/outputs/apk/release/app-release-unsigned.apk app/release/Lock.apk
+    - name: Sign APK
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: app/release
+        signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
+        keyPassword: ${{ secrets.KEYPASSWORD }}
+    - name: Remove unsigned release file
+      run:  rm app/release/Lock.apk 
+    - name: Rename signed release file
+      run:  mv app/release/Lock-signed.apk app/release/Lock.apk    
     - name: Setup git
       run: |
-        git config --global user.name ${{ secrets.ACTIONS_USERNAME }}
-        git config --global user.email ${{ secrets.ACTIONS_EMAIL }}
+        git config --local user.name ${{ secrets.ACTIONS_USERNAME }}
+        git config --local user.email ${{ secrets.ACTIONS_EMAIL }}
     - name: Add, Commit and Push APK
       run: |
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git pull github ${GITHUB_REF} --ff-only
 
-        git add app/release/*
+        git add app/release/Lock.apk
 
         git commit -m "Update release apk"
         git push github HEAD:${GITHUB_REF}
-
