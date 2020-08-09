@@ -36,7 +36,7 @@ jobs:
     - name: Remove unsigned file
       run:  rm app/release/temp.apk 
     - name: Rename signed file
-      run:  mv app/release/temp-signed.apk app/release/${{ secrets.APP_NAME }}.apk    
+      run:  mv app/release/temp-signed.apk app/release/Lock.apk    
     - name: Setup git
       run: |
         git config --local user.name ${{ secrets.ACTIONS_USERNAME }}
@@ -46,7 +46,7 @@ jobs:
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git pull github ${GITHUB_REF} --ff-only
 
-        git add app/release/${{ secrets.APP_NAME }}.apk
+        git add app/release/Lock.apk
 
         git commit -m "Update release apk"
         git push github HEAD:${GITHUB_REF}
