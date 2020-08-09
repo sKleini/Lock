@@ -28,14 +28,18 @@ jobs:
         signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
-        keyPassword: ${{ secrets.KEYPASSWORD }}
-    - name: Add, Commit and Push Apk
+        keyPassword: ${{ secrets.KEYPASSWORD }}    
+    - name: Setup git
       run: |
-          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-          git pull github ${GITHUB_REF} --ff-only
+        git config --global user.name ${{ secrets.ACTIONS_USERNAME }}
+        git config --global user.email ${{ secrets.ACTIONS_EMAIL }}
+    - name: Add, Commit and Push APK
+      run: |
+        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+        git pull github ${GITHUB_REF} --ff-only
 
-          git add app/release/Lock-signed.apk
+        git add app/release/Lock-signed.apk
 
-          git commit -m "Update release apk"
-          git push github HEAD:${GITHUB_REF}
+        git commit -m "Update release apk"
+        git push github HEAD:${GITHUB_REF}
 
