@@ -19,5 +19,5 @@ jobs:
         java-version: 1.8
     - name: Env variablen
       run: |
-        APP_NAME = cat | (${GITHUB_REPOSITORY} | cut -d '/' -f2)
-        echo $APP_NAME
+        APP= cat | (${GITHUB_REPOSITORY} | cut -d '/' -f2)
+        echo $APP
