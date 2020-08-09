@@ -21,7 +21,7 @@ jobs:
       run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Release
+    - name: Release APK
       uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: app/release
@@ -29,9 +29,13 @@ jobs:
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
         keyPassword: ${{ secrets.KEYPASSWORD }}
-    - name: Commit Apk
-      run: git commit
-    - name: Push Apk
-      run: git push
+    - name: Add, Commit and Push Apk
+      run: |
+          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+          git pull github ${GITHUB_REF} --ff-only
 
+          git add app/release/Lock-release.apk
+
+          git commit -m "Update release apk"
+          git push github HEAD:${GITHUB_REF}
 
