@@ -22,7 +22,9 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assemble
     - name: Copy unsigned release file to release folder
-      run:  cp app/build/outputs/apk/release/app-release-unsigned.apk app/release/Lock.apk
+      run:  |
+        mkdir app/release
+        cp app/build/outputs/apk/release/app-release-unsigned.apk app/release/Lock.apk
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
       with:
