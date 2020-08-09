@@ -38,7 +38,7 @@ jobs:
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git pull github ${GITHUB_REF} --ff-only
 
-        git add app/release/*
+        git add app/release/Lock-signed.apk
 
         git commit -m "Update release apk"
         git push github HEAD:${GITHUB_REF}
