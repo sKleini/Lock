@@ -29,5 +29,8 @@ jobs:
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
         keyPassword: ${{ secrets.KEYPASSWORD }}
+    - name: Commit and Push
+      run: git commit
+      run: git push
 
 
