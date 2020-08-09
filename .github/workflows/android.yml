@@ -17,7 +17,35 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Env variablen
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    - name: Build with Gradle
+      run: ./gradlew assemble
+    - name: Copy unsigned release file to release folder
+      run:  |
+        APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
+        mkdir -p app/release
+        cp "app/build/outputs/apk/release/app-release-unsigned.apk" "app/release/$APP.apk"
+    - name: Sign APK
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: app/release
+        signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
+        keyPassword: ${{ secrets.KEYPASSWORD }}
+    - name: Remove unsigned release file
+      run:  rm "app/release/$APP.apk"
+    - name: Rename signed release file
+      run:  mv "app/release/$APP-signed.apk" "app/release/$APP.apk"    
+    - name: Setup git
       run: |
-        APP= cat | (echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
-        echo $APP
+        git config --local user.name ${{ secrets.ACTIONS_USERNAME }}
+        git config --local user.email ${{ secrets.ACTIONS_EMAIL }}
+    - name: Add, Commit and Push APK
+      run: |
+        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+        git pull github ${GITHUB_REF} --ff-only
+        git add "app/release/$APP.apk"
+        git commit -m "Update release apk" -a
+        git push github HEAD:${GITHUB_REF}
