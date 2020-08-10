@@ -25,6 +25,7 @@ jobs:
       run:  |
         APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
         mkdir -p app/release
+        rm -f "app/release/$APP.apk"
         cp "app/build/outputs/apk/release/app-release-unsigned.apk" "app/release/$APP.apk"
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
@@ -47,8 +48,6 @@ jobs:
         git pull github ${GITHUB_REF} --ff-only
         
         git add "app/release/$APP.apk"
-        git reset "app/release/$APP-aligned.apk"
-        git reset "app/release/signingKey.jks"
         git commit -m "Update release apk"
 
-        git push github HEAD:${GITHUB_REF} -f
+        git push github HEAD:${GITHUB_REF}
