@@ -25,7 +25,6 @@ jobs:
       run:  |
         APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
         mkdir -p app/release
-        rm -f "app/release/$APP.apk"
         cp "app/build/outputs/apk/release/app-release-unsigned.apk" "app/release/$APP.apk"
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
