@@ -49,5 +49,6 @@ jobs:
         git status
         git add -f "app/release/$APP.apk"
         git commit -m "Update release apk"
+        git clean -f
 
         git push github HEAD:${GITHUB_REF}
