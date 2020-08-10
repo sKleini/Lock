@@ -47,7 +47,7 @@ jobs:
         git pull github ${GITHUB_REF} --ff-only
         
         git add -f "app/release/$APP.apk"
-        git reset --hard HEAD
+        git clean -fX
         git commit -m "Update release apk"
 
         git push github HEAD:${GITHUB_REF}
