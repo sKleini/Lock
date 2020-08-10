@@ -42,7 +42,7 @@ jobs:
 
         git pull
 
-        git add --force "app/release/$APP.apk"
+        git add -f "app/release/$APP.apk"
         git commit -m "Update release apk"
 
-        git push -f
+        git push
