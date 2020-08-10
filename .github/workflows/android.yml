@@ -21,15 +21,10 @@ jobs:
       run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew assemble
-    - name: Copy unsigned release file to release folder
-      run:  |
-        APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
-        mkdir -p app/release
-        cp "app/build/outputs/apk/release/app-release-unsigned.apk" "app/release/$APP.apk"
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
       with:
-        releaseDirectory: app/release
+        releaseDirectory: app/build/outputs/apk/release
         signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
@@ -42,12 +37,14 @@ jobs:
     - name: Rename, Add, Commit and Push APK
       run: |
         APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
-        mv -f "app/release/$APP-signed.apk" "app/release/$APP.apk" 
-        
+        mkdir -p app/release
+        ls app/release
+        mv -f "app/build/outputs/apk/release/app-release-unsigned-signed.apk" "app/release/$APP.apk"
+        ls app/release
         git pull
-        
-        git rm --cached "app/release/$APP.apk"
-        git add -f "app/release/$APP.apk"
+
+        git status
+        git add --force "app/release/$APP.apk"
         git commit -m "Update release apk"
 
         git push
