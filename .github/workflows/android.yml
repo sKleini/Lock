@@ -38,13 +38,11 @@ jobs:
       run: |
         APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
         mkdir -p app/release
-        ls app/release
         mv -f "app/build/outputs/apk/release/app-release-unsigned-signed.apk" "app/release/$APP.apk"
-        ls app/release
+
         git pull
 
-        git status
         git add --force "app/release/$APP.apk"
         git commit -m "Update release apk"
 
-        git push
+        git push -f
