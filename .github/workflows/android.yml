@@ -46,6 +46,7 @@ jobs:
         
         git pull
         
+        git rm --cached "app/release/$APP.apk"
         git add "app/release/$APP.apk"
         git commit -m "Update release apk"
 
