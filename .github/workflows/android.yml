@@ -42,12 +42,11 @@ jobs:
     - name: Rename, Add, Commit and Push APK
       run: |
         APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
-        mv -f "app/release/$APP-signed.apk" "app/release/$APP.apk" 
+        mv -f "app/release/$APP-signed.apk" "app/release/$APP1.apk" 
         
-        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-        git pull github ${GITHUB_REF} --ff-only
+        git pull
         
-        git add "app/release/$APP.apk"
+        git add "app/release/$APP1.apk"
         git commit -m "Update release apk"
 
-        git push github HEAD:${GITHUB_REF}
+        git push
