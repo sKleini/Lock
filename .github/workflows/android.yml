@@ -46,9 +46,8 @@ jobs:
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git pull github ${GITHUB_REF} --ff-only
         
-        git status
         git add -f "app/release/$APP.apk"
+        git reset --hard HEAD
         git commit -m "Update release apk"
-        git clean -f
 
         git push github HEAD:${GITHUB_REF}
