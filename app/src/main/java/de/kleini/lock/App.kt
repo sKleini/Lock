@@ -18,8 +18,8 @@ class App() : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
-//        setContentView(R.layout.activity_app)
-//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        setContentView(R.layout.activity_app)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
         sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         sharedPref.edit().putBoolean(PREF_NAME, false).apply()
