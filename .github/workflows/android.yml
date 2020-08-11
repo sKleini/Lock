@@ -37,9 +37,9 @@ jobs:
     - name: Rename, Add, Commit and Push APK
       run: |
         APP=$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f2)
-        current_time=$(date "+%Y.%m.%d-%H.%M.%S")
-        echo "Current Time : $current_time"
- 
+        export TZ=Europe/Berlin
+        current_time=$(date "+%Y%m%d-%H%M%S")
+
         git pull
         rm -r app/release
         mkdir -p app/release
