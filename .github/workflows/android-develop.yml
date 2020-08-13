@@ -48,12 +48,12 @@ jobs:
 
         git clone "https://${{ secrets.API_TOKEN_GITHUB }}@github.com/$OWNER/APK-releases" "$CLONEDIR"
 
-        mkdir -p $CLONEDIR/$APP
-        rm -rf $CLONEDIR/$APP/*
+        mkdir -p $CLONEDIR/$APP/develop
+        rm -rf $CLONEDIR/$APP/develop/*
 
         mv -f "app/build/outputs/apk/release/app-release-unsigned-signed.apk" "$CLONEDIR/$APP/develop/$APP.apk"
         
-        ls -la "$CLONEDIR/$APP"
+        ls -la "$CLONEDIR/$APP/develop"
         cd "$CLONEDIR"
         
         git add .
