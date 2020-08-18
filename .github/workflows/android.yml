@@ -53,7 +53,7 @@ jobs:
         CLONEDIR="app/release"
         BRANCH="/${GITHUB_REF##*/}"
         
-        if [ $BRANCH = "master" ];
+        if [ $BRANCH = "/master" ];
         then
           BRANCH=""
         fi
