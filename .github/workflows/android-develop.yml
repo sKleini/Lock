@@ -1,4 +1,4 @@
-name: Android CI/CD on ${GITHUB_REF##*/}
+name: Android CI/CD on Branch
 
 on:
   push:
