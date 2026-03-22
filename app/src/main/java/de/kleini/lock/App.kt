@@ -1,19 +1,17 @@
 package de.kleini.lock
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 
 
-class App() : AppCompatActivity() {
+class App : AppCompatActivity() {
 
-    private val TAG = "Activity"
-    lateinit var sharedPref: SharedPreferences
-    private var PRIVATE_MODE = 0
-    private val PREF_NAME = "store"
+    private val TAG = "App"
+    private val viewModel: LockViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,11 +19,10 @@ class App() : AppCompatActivity() {
         setContentView(R.layout.activity_app)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
-        sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        sharedPref.edit().putBoolean(PREF_NAME, false).apply()
+        viewModel.setShouldExit(false)
 
         if (!checkDrawOverlayPermission()) {
-                startLockTask()
+            startLockTask()
         }
 
         findViewById<View>(R.id.finish)
@@ -41,23 +38,20 @@ class App() : AppCompatActivity() {
         super.onResume()
         Log.d(TAG, "onResume")
 
-        sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-
-        if (sharedPref.getBoolean(PREF_NAME, true)) {
+        if (viewModel.shouldExit.value) {
             if (!checkDrawOverlayPermission()) {
                 stopLockTask()
             }
             finishAndRemoveTask()
         } else {
-            sharedPref.edit().putBoolean(PREF_NAME, true).apply()
+            viewModel.setShouldExit(true)
         }
     }
 
     override fun onRestart() {
         super.onRestart()
         Log.d(TAG, "onRestart")
-        sharedPref = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        sharedPref.edit().putBoolean(PREF_NAME, false).apply()
+        viewModel.setShouldExit(false)
     }
 
     override fun onDestroy() {
@@ -75,26 +69,17 @@ class App() : AppCompatActivity() {
     }
 
     private fun hideSystemUI() {
-        // Enables regular immersive mode.
-        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
-        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
-    // Shows the system bars by removing all the flags
-    // except for the ones that make the content appear under the system bars.
     private fun showSystemUI() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
-
 }

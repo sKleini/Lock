@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="finish">Off</string>
+    <string name="finish_description">Kiosk-Modus beenden</string>
 </resources>
